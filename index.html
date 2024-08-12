@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 150px;
+            height: 100vh;
+            background: linear-gradient(45deg,rgb(53, 79, 79),rgb(67, 98, 90),rgb(8, 186, 130));
+        }
+        .box-container {
+            box-shadow: 0 0 6px rgb(31, 27, 27);
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+            background: linear-gradient(rgb(85, 135, 162),rgb(150, 107, 150));
+        }
+        input{
+            width: 240px;
+            padding: 10px;
+            margin: 10px;
+        }
+        button{
+            box-shadow: 0 0 6px black;
+            color: #4217ee;
+            background-color: rgb(9, 233, 233);
+        }
+        ul {
+            list-style-type:disc;
+            padding: 0;
+        }
+        h1{
+            color: #e5f106;
+        }
+        li {
+            margin-left: 60px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color:lime;
+        }
+        button {
+            padding: 10px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+        }
+        button:hover{
+            opacity: 0.8;
+        }
+        .incomplete-btn {
+            background-color: #f8061e;
+            color: white;
+        }
+        .complete-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .remove-btn {
+            background-color: #f106d6;
+            color: white;
+        }
+        .progress-container {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #3328a7;
+        }
+        progress {
+            width: 100%;
+            height: 4px;
+            appearance: none;
+        }
+        progress::-webkit-progress-bar {
+            background-color: #eee;
+            border-radius: 5px;
+        }
+        progress::-webkit-progress-value {
+            background-color: #4bef42;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box-container">
+        <div class="progress-container">
+            <label for="progressBar">Progress bar</label>
+            <progress id="progressBar" value="0" max="100"></progress>
+        </div>
+        <h1>To-Do List</h1>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <button onclick="addTask()">Add a Task</button>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+            if (taskText) {
+                tasks.push({ text: taskText, completed: false });
+                taskInput.value = '';
+                renderTasks();
+            }
+            else{
+                alert("Enter atleast one Task to add");
+            }
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${task.text}</span>
+                    <div>
+                        <button class="${task.completed ? 'complete-btn' : 'incomplete-btn'}" onclick="toggleTask(${index})">
+                            ${task.completed ? 'Completed' : 'Incomplete'}
+                        </button>
+                        <button class="remove-btn" onclick="deleteTask(${index})">Remove</button>
+                    </div>
+                `;
+                taskList.appendChild(li);
+            });
+            updateProgress();
+        }
+
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            renderTasks();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderTasks();
+        }
+
+        function updateProgress() {
+            const completedTasks = tasks.filter(task => task.completed).length;
+            const progress = tasks.length ? (completedTasks / tasks.length) * 100 : 0;
+            document.getElementById('progressBar').value = progress;
+        }
+    </script>
+</body>
+</html>
